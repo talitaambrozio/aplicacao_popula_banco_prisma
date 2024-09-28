@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Instituicao {
+  id_instituicao Int @id @default(autoincrement())
+  nome_instituicao String
+  agencias Agencia[] 
+
+  @@map("instituicao")
+}
+
+model Localidade {
+  id_localidade Int @id @default(autoincrement())
+  cidade String
+  estado String
+  pais String
+  cep String
+  bairro String
+  logradouro String
+  agencias Agencia[]
+  clientes Cliente[]
+
+   @@map("localidade")
+}
+ 
+model Agencia {
+  id_agencia Int @id @default(autoincrement())
+  nome_agencia String
+  numero_agencia Int
+  id_instituicao Int
+  id_localidade Int
+  instituicao Instituicao @relation(fields: [id_instituicao], references: [id_instituicao]) 
+  localidade Localidade @relation(fields: [id_localidade], references: [id_localidade]) 
+  contas Conta[]
+  
+  @@map("agencia")
+} 
+
+model Cliente {
+  id_cliente Int @id @default(autoincrement())
+  tipo_cliente String
+  cpf String?
+  nome String?
+  sobrenome String?
+  sexo String?
+  razao_social String?
+  cnpj String?
+  id_localidade Int
+  localidade Localidade @relation(fields: [id_localidade], references: [id_localidade]) // Chave estrangeira
+  contas Conta[] 
+
+   @@map("cliente")
+}
+
+model Conta {
+  id_conta Int @id @default(autoincrement())
+  numero_conta String
+  digito String
+  data_abertura DateTime
+  id_agencia Int
+  id_cliente Int
+  transacoes Transacao[]
+
+  agencia Agencia @relation(fields: [id_agencia], references: [id_agencia])
+  cliente Cliente @relation(fields: [id_cliente], references: [id_cliente]) 
+
+  @@map("conta")
+}
+
+model Transacao {
+  id_transacao Int @id @default(autoincrement())
+  data_transacao DateTime
+  tipo_transacao String
+  valor Int
+  descricao String
+  id_conta Int
+
+  conta Conta @relation(fields: [id_conta], references: [id_conta]) 
+
+  @@map("transacao")
+}
+
