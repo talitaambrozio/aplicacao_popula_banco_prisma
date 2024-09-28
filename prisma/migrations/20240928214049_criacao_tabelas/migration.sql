@@ -38,8 +38,6 @@ CREATE TABLE `cliente` (
     `nome` VARCHAR(191) NOT NULL,
     `sobrenome` VARCHAR(191) NOT NULL,
     `sexo` VARCHAR(191) NOT NULL,
-    `razao_social` VARCHAR(191) NOT NULL,
-    `cnpj` VARCHAR(191) NOT NULL,
     `id_localidade` INTEGER NOT NULL,
 
     PRIMARY KEY (`id_cliente`)

@@ -8,7 +8,7 @@
     "prisma:migrate:dev": "prisma migrate dev"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tns-code prisma/seed.ts"
   },
   "keywords": [],
   "author": "",

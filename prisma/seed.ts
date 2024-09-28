@@ -1,11 +1,10 @@
-import { connect } from "http2";
 import prisma from "../src/config/database.js";
 import { faker } from "@faker-js/faker";
 
 const INSTITUICAO_QTD = 10; // Ajuste conforme necessário
-const CLIENTE_QTD = 50000; // Número total de clientes a serem criados
-const CONTA_QTD = 50000; // Número total de contas a serem criadas
-const TRANSAÇÃO_QTD = 50000; // Número total de transações a serem criadas
+const CLIENTE_QTD = 1000; // Número total de clientes a serem criados
+const CONTA_QTD = 1000; // Número total de contas a serem criadas
+const TRANSAÇÃO_QTD = 1000; // Número total de transações a serem criadas
 
 async function main() {
     // Criar instituições e localidades
@@ -39,26 +38,24 @@ async function main() {
             }
         });
 
-        // Criar clientes para cada instituição
-        for (let j = 0; j < CLIENTE_QTD / INSTITUICAO_QTD; j++) {
-            const tipo_cliente = faker.helpers.arrayElement(['PJ', 'PF']);
-            const clienteData = {
-                tipo_cliente: tipo_cliente,
-                cpf: tipo_cliente === 'PF' ? faker.string.numeric(11) : null,
-                nome: faker.person.firstName(),
-                sobrenome: faker.person.lastName(),
-                sexo: tipo_cliente === 'PF' ? faker.helpers.arrayElement(['Feminino', 'Masculino']) : null,
-                razao_social: tipo_cliente === 'PJ' ? faker.company.name() : null,
-                cnpj: tipo_cliente === 'PJ' ? faker.string.numeric(14) : null,
-                id_localidade: localidade.id_localidade,
-                localidade: {
-                    connect: { id_localidade: localidade.id_localidade }
-                  }
-            };
+       // Criar clientes para cada instituição
+    for (let j = 0; j < CLIENTE_QTD / INSTITUICAO_QTD; j++) {
+            // Criar o cliente no banco de dados
+            const clienteData =  {
+                    tipo_cliente: 'PF',
+                    cpf: faker.string.numeric(11),
+                    nome: faker.person.firstName() ,
+                    sobrenome: faker.person.lastName(),
+                    sexo: faker.helpers.arrayElement(['F', 'M']),
+                    localidade: {
+                        connect: { id_localidade: localidade.id_localidade }
+                    },
+                }
+                const cliente = await prisma.cliente.create({
+                    data: clienteData
+                });
 
-            const cliente = await prisma.cliente.create({
-                data: clienteData
-            });
+            console.log(`Cliente criado: ${cliente}`);
 
             // Criar contas para cada cliente
             for (let k = 0; k < CONTA_QTD / CLIENTE_QTD; k++) {
@@ -92,6 +89,7 @@ async function main() {
         }
     }
 }
+
 
 main().then(async() => {
     await prisma.$disconnect();

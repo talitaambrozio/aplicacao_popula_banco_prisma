@@ -51,14 +51,12 @@ model Agencia {
 model Cliente {
   id_cliente Int @id @default(autoincrement())
   tipo_cliente String
-  cpf String?
-  nome String?
-  sobrenome String?
-  sexo String?
-  razao_social String?
-  cnpj String?
+  cpf String
+  nome String
+  sobrenome String
+  sexo String
   id_localidade Int
-  localidade Localidade @relation(fields: [id_localidade], references: [id_localidade]) // Chave estrangeira
+  localidade Localidade @relation(fields: [id_localidade], references: [id_localidade])
   contas Conta[] 
 
    @@map("cliente")
