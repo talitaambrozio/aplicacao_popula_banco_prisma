@@ -1,10 +1,10 @@
 import prisma from "../src/config/database.js";
 import { faker } from "@faker-js/faker";
 
-const INSTITUICAO_QTD = 10; // Ajuste conforme necessário
-const CLIENTE_QTD = 1000; // Número total de clientes a serem criados
-const CONTA_QTD = 1000; // Número total de contas a serem criadas
-const TRANSAÇÃO_QTD = 1000; // Número total de transações a serem criadas
+const INSTITUICAO_QTD = 3000; // Ajuste conforme necessário
+const CLIENTE_QTD = 3000; // Número total de clientes a serem criados
+const CONTA_QTD = 3000; // Número total de contas a serem criadas
+const TRANSAÇÃO_QTD = 3000; // Número total de transações a serem criadas
 
 async function main() {
     // Criar instituições e localidades

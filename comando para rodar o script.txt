@@ -1,7 +1,7 @@
 1o: npx prisma generate
 
 2o:
-lançar atualizações do BD: npm prisma migrate dev
+lançar atualizações do BD: npx prisma migrate dev
 
 3o:
 executar programa: npx tsx prisma/seed.ts
