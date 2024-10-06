@@ -17,7 +17,8 @@ Esta aplicação utiliza as seguintes tecnologias:
 ### Variáveis de Ambiente ⚙️
 
 Antes de executar a aplicação, configure suas variáveis de ambiente. Certifique-se de definir a variável `DATABASE_URL` que contém a URL de conexão ao seu banco de dados MySQL. A variável deve ter o seguinte formato:
-DATABASE_URL="mysql://usuario@localhost:3306/nome_do_banco"
+
+**DATABASE_URL="mysql://usuario@localhost:3306/nome_do_banco"**
 
 
 ### Executando a Aplicação ▶️
