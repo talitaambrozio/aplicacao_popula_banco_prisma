@@ -23,6 +23,7 @@
   "dependencies": {
     "@prisma/client": "^5.20.0",
     "faker": "^6.6.6",
+    "p-limit": "^6.1.0",
     "prisma": "^5.20.0"
   }
 }
