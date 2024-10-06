@@ -6,10 +6,9 @@ const INSTITUICAO_QTD = 1000;
 const CLIENTE_QTD = 10000;
 const CONTA_QTD = 10000;
 const TRANSACAO_QTD = 50000;
-const BATCH_SIZE = 500; // Inserção em blocos de 100 registros
+const BATCH_SIZE = 500; 
 
 async function main() {
-  // Criar instituições e localidades em blocos
 
   for (let i = 0; i < INSTITUICAO_QTD; i += BATCH_SIZE) {
     const instituicaoBatch = [];
@@ -33,11 +32,9 @@ async function main() {
       });
     }
 
-    // Inserção em massa de instituições e localidades
     await prisma.instituicao.createMany({ data: instituicaoBatch });
     await prisma.localidade.createMany({ data: localidadeBatch });
 
-    // Buscar as instituições e localidades recém-criadas
     const instituicoes = await prisma.instituicao.findMany({
       skip: i,
       take: BATCH_SIZE,
@@ -50,7 +47,6 @@ async function main() {
 
     const agenciaBatch = [];
 
-    // Criar agências vinculadas às instituições e localidades criadas
     for (let j = 0; j < instituicoes.length; j++) {
       console.log(`Criando agência para instituição ${i + j + 1}`);
       agenciaBatch.push({
@@ -61,21 +57,18 @@ async function main() {
       });
     }
 
-    // Inserção em massa das agências
     await prisma.agencia.createMany({ data: agenciaBatch });
 
-    // Buscar as agências recém-criadas
     const agencias = await prisma.agencia.findMany({
       skip: i,
       take: BATCH_SIZE,
     });
 
-    // Criar clientes em blocos
     for (let j = 0; j < CLIENTE_QTD; j += BATCH_SIZE) {
       const clienteBatch = [];
       const clienteContasBatch = [];
       const transacaoBatch = [];
-      const qtd_cliente = await prisma.cliente.count();  // Otimização para contar fora dos loops
+      const qtd_cliente = await prisma.cliente.count();  
 
       for (let k = 0; k < BATCH_SIZE && qtd_cliente + k < CLIENTE_QTD; k++) {
         console.log(`Criando cliente ${j + k + 1} de ${CLIENTE_QTD}`);
@@ -89,21 +82,16 @@ async function main() {
         });
       }
 
-      // Inserção em massa de clientes
       await prisma.cliente.createMany({ data: clienteBatch });
 
-      // Buscar os clientes recém-criados
       const clientes = await prisma.cliente.findMany({
         skip: j,
         take: BATCH_SIZE,
       });
 
-      // Criar uma conta única para cada cliente, garantindo o limite de contas
       for (let idx = 0; idx < clientes.length && totalContasCriadas < CONTA_QTD; idx++) {
-        // Verifica se o limite de contas já foi atingido
         if (totalContasCriadas >= CONTA_QTD) break;
 
-        // Criar uma conta única para cada cliente, garantindo o limite de contas
           console.log(`Criando conta única para cliente ${idx + 1}`);
           clienteContasBatch.push({
             numero_conta: faker.string.numeric(8),
@@ -112,22 +100,20 @@ async function main() {
             id_agencia: agencias[faker.number.int({ min: 0, max: agencias.length - 1 })].id_agencia,
             id_cliente: clientes[idx].id_cliente,
           });
-          totalContasCriadas++; // Incrementar a contagem de contas criadas
+          totalContasCriadas++; 
       }
 
-      // Inserção em massa de contas
       if (clienteContasBatch.length > 0) {
         await prisma.conta.createMany({ data: clienteContasBatch });
       }
 
-      // Buscar as contas recém-criadas
       const contas = await prisma.conta.findMany({
         skip: j,
         take: BATCH_SIZE,
       });
 
-      const qtd_transacao = await prisma.transacao.count();  // Otimização para contar fora dos loops
-      // Criar transações vinculadas às contas
+      const qtd_transacao = await prisma.transacao.count(); 
+
       contas.forEach((conta, idx) => {
         for (let l = 0; l < TRANSACAO_QTD / CONTA_QTD && qtd_transacao + l < TRANSACAO_QTD; l++) {
           console.log(`Criando transação ${l + 1} para conta ${idx + 1}`);
@@ -141,7 +127,6 @@ async function main() {
         }
       });
 
-      // Inserção em massa de transações
       await prisma.transacao.createMany({ data: transacaoBatch });
     }
   }
@@ -149,7 +134,6 @@ async function main() {
   console.log("Inserção de dados completa.");
 }
 
-// Executar a função
 main()
   .catch(error => {
     console.error(error);
